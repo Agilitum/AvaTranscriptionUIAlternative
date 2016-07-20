@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -24,12 +25,52 @@
 
     <include layout="@layout/content_main"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/microphone_off"/>
+        fab:menu_fab_size="normal"
+        fab:menu_showShadow="true"
+        fab:menu_shadowColor="#66000000"
+        fab:menu_shadowRadius="4dp"
+        fab:menu_shadowXOffset="1dp"
+        fab:menu_shadowYOffset="3dp"
+        fab:menu_animationDelayPerItem="50"
+        fab:menu_colorNormal="#ffffff"
+        fab:menu_colorPressed="#ffffff"
+        fab:menu_icon="@drawable/microphone_off_fab"
+        fab:menu_labels_textColor="#ffffff"
+        fab:menu_labels_textSize="14sp"
+        fab:menu_labels_cornerRadius="3dp"
+        fab:menu_labels_colorNormal="#333333"
+        fab:menu_labels_colorPressed="#444444"
+        fab:menu_labels_showShadow="true"
+        fab:menu_labels_position="left"
+        fab:menu_openDirection="up"
+        fab:menu_backgroundColor="#ffffff"
+        android:longClickable="true">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_text_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/keyboard"
+            fab:fab_size="mini"
+            fab:fab_label="Keyboard"
+            fab:fab_colorNormal="#FF286DCE"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_item_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/reset"
+            fab:fab_size="mini"
+            fab:fab_label="Reset"
+            fab:fab_colorNormal="#286dce"/>
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

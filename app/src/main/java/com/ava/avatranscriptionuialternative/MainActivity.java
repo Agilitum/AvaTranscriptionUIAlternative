@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
@@ -32,7 +32,6 @@ import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 	private String transcript;
 
 	private boolean fabClicked;
+	private boolean fabMenuOpen;
 	private String speakerId;
 
 	private HashMap<String, Integer> personColour;
@@ -54,15 +54,14 @@ public class MainActivity extends AppCompatActivity {
 	@Bind(R.id.transcipt)
 	TextView transcriptTextView;
 
-	@Bind(R.id.fab)
-	FloatingActionButton floatingActionButton;
+	@Bind(R.id.fab_menu)
+	FloatingActionMenu floatingActionMenu;
 
 	@Bind(R.id.circleBackgroundTranscript)
 	FrameLayout circleBackgroundTranscript;
 
 	@Bind(R.id.personIcon)
 	ImageView personIcon;
-
 
 
 	@Override
@@ -77,6 +76,44 @@ public class MainActivity extends AppCompatActivity {
 		personColour = new HashMap<>();
 
 		pubnubStaticChannelSubscribe();
+
+		// enable microphone on normal click
+		floatingActionMenu.setOnMenuButtonClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Snackbar snackbar = Snackbar.make(v, "Recording", Snackbar.LENGTH_INDEFINITE);
+				if(fabMenuOpen){
+					floatingActionMenu.close(true);
+					floatingActionMenu.getMenuIconView().setImageResource(R.drawable.microphone_off_fab);
+					floatingActionMenu.setMenuButtonColorNormal(Color.WHITE);
+					fabMenuOpen = false;
+				} else if(fabClicked){
+					floatingActionMenu.getMenuIconView().setImageResource(R.drawable.microphone_off_fab);
+					floatingActionMenu.setMenuButtonColorNormal(Color.WHITE);
+					//TODO: somewhow dismiss() is buggy
+					snackbar.dismiss();
+					fabClicked = false;
+				} else {
+					floatingActionMenu.getMenuIconView().setImageResource(R.drawable.microphone_on_fab);
+					floatingActionMenu.setMenuButtonColorNormal(Color.RED);
+					snackbar.show();
+					fabClicked = true;
+				}
+
+			}
+		});
+
+		// open fab menu for additional options
+		floatingActionMenu.setOnMenuButtonLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				floatingActionMenu.open(true);
+				floatingActionMenu.getMenuIconView().setImageResource(R.drawable.ic_close);
+				floatingActionMenu.setMenuButtonColorNormal(Color.argb(255, 40,109, 206));
+				fabMenuOpen = true;
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -101,21 +138,6 @@ public class MainActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@OnClick(R.id.fab)
-	public void onClick(View view){
-		Snackbar snackbar = Snackbar.make(view, "Recording", Snackbar.LENGTH_INDEFINITE);
-		if(fabClicked){
-			floatingActionButton.setBackgroundColor(Color.BLUE);
-			floatingActionButton.setImageResource(R.drawable.microphone_off);
-			//TODO: somewhow dismiss() is buggy
-			snackbar.dismiss();
-		} else {
-			floatingActionButton.setBackgroundColor(Color.RED);
-			floatingActionButton.setImageResource(R.drawable.microphone_on);
-			snackbar.show();
-		}
-		fabClicked = true;
-	}
 
 	public void pubnubStaticChannelSubscribe(){
 
